@@ -25,6 +25,7 @@ struct TriviaQuestion: Codable, Identifiable {
     let question: String
     let correctAnswer: String
     let incorrectAnswers: [String]
+    let allAnswers: [String]
     
     enum CodingKeys: String, CodingKey {
         case category, type, difficulty, question
@@ -32,8 +33,16 @@ struct TriviaQuestion: Codable, Identifiable {
         case incorrectAnswers = "incorrect_answers"
     }
     
-    // Shuffled answers so correct one isn't always last
-    var allAnswers: [String] {
-        (incorrectAnswers + [correctAnswer]).shuffled()
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        category = try container.decode(String.self, forKey: .category)
+        type = try container.decode(String.self, forKey: .type)
+        difficulty = try container.decode(String.self, forKey: .difficulty)
+        question = try container.decode(String.self, forKey: .question)
+        correctAnswer = try container.decode(String.self, forKey: .correctAnswer)
+        incorrectAnswers = try container.decode([String].self, forKey: .incorrectAnswers)
+        
+        // Shuffle answers once during initialization
+        allAnswers = (incorrectAnswers + [correctAnswer]).shuffled()
     }
 }

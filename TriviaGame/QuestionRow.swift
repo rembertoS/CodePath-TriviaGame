@@ -18,7 +18,7 @@ struct QuestionRow: View {
                 .font(.body)
                 .bold()
 
-            ForEach(question.allAnswers, id: \.self) { answer in
+            ForEach(Array(question.allAnswers.enumerated()), id: \.offset) { index, answer in
                 Button {
                     onSelect(answer)
                 } label: {
